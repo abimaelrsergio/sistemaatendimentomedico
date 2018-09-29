@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:outputStylesheet>
+        .colunaAcoes {width:5px}
+        .centralizar{width: 600px; position: relative; left: 50%; margin-left: -300px;}
+        .even-row {background-color: #FCFFFE;}
+        .odd-row {background-color: #ECF3FE;}
+        .active-row {background-color: #FFEBDA !important; cursor: pointer;}
+    </h:outputStylesheet>
+
+	<p:panel header="Cadastro de tratamentos">
+		<h:form id="formTratamentos" styleClass="centralizar">
+
+			<h:panelGrid id="tratamentoPanelGrid" columns="7">
+				<h:inputHidden id="idTratamento" value="#{tratamentoBean.tratamento.id}" />
+				<h:outputText value="Nome do Tratamento:" />
+				<p:autoComplete id="nomeTratamento"
+					value="#{tratamentoBean.tratamento.nomeTratamento}"
+					requiredMessage="Preenchimento obrigatório" effect="fade"
+					required="true" completeMethod="#{tratamentoBean.autoCompletar}" />
+					<p:message for="nomeTratamento" ajaxRendered="true" />
+				<h:outputText value="Valor do tratamento:" />
+				<p:inputText value="#{tratamentoBean.tratamento.valorTratamento}" requiredMessage="Digite o valor do tratamento" id="valorTratamento" required="true"/>
+				<p:message for="valorTratamento" ajaxRendered="true" />
+			</h:panelGrid>
+			<h:panelGrid>
+				<p:commandButton actionListener="#{tratamentoBean.grava}"
+					value="cadastrar" update="@(form:formTratamentos2)"
+					process="idTratamento, nomeTratamento" />
+			</h:panelGrid>
+			<br />
+		</h:form>
+		<h:form id="formTratamentos2" styleClass="centralizar">
+
+			<p:dataTable id="tratamentosDataTable" lazy="true" paginator="true" rows="5" paginatorPosition="bottom"
+				value="#{tratamentoBean.tratamentos}" var="tratamento">
+
+				<p:column id="modelHeader" headerText="Nome">
+					<h:outputText value="#{tratamento.nomeTratamento}" />
+				</p:column>
+
+				<p:column id="modelHeader2" headerText="Valor">
+					<h:outputText value="#{tratamento.valorTratamento}" />
+				</p:column>
+				
+				<p:column style="width:50px">
+					<p:commandLink update="@(form)">
+						<h:graphicImage value="/imagens/icones/edit.gif" alt="edit" />
+						<f:setPropertyActionListener value="#{tratamento}"
+							target="#{tratamentoBean.tratamento}" />
+					</p:commandLink>
+				</p:column>
+
+				<p:column style="width:50px">
+					<p:commandLink update="@(form)" action="#{tratamentoBean.remove}">
+						<h:graphicImage value="/imagens/icones/delete.gif" alt="delete" />
+						<f:setPropertyActionListener value="#{tratamento}"
+							target="#{tratamentoBean.tratamento}" />
+					</p:commandLink>
+				</p:column>
+				
+				<f:facet name="footer">
+					Total de convênios: #{tratamentoBean.tratamentos.size()} 
+				</f:facet>
+			</p:dataTable>
+		</h:form>
+	</p:panel>
+</ui:composition>

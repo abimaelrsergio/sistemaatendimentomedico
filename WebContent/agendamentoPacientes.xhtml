@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<h:outputStylesheet>
+        .colunaAcoes {width:5px}
+        .centralizar{width: 600px; position: relative; left: 50%; margin-left: -300px;}
+        .even-row {background-color: #FCFFFE;}
+        .odd-row {background-color: #ECF3FE;}
+        .active-row {background-color: #FFEBDA !important; cursor: pointer;}
+    </h:outputStylesheet>
+
+	<p:panel header="Agendamento de Pacientes">
+		<h:form id="formAgendamentos" styleClass="centralizar">
+
+			<h:panelGrid id="agendamentoPanelGrid" columns="7">
+				<h:inputHidden id="idAgendamento" value="#{agendamentoBean.paciente.id}" />
+				<h:outputText value="Nome do Paciente:" />
+				<p:autoComplete id="nomeAgendamento"
+					value="#{agendamentoBean.paciente.nomePaciente}"
+					requiredMessage="Preenchimento obrigatório" effect="fade"
+					required="true" completeMethod="#{agendamentoBean.autoCompletar}" />
+				<p:message for="nomeAgendamento" ajaxRendered="true" />
+				<h:outputText value="Especialidade"/>
+				<p:selectOneMenu value="#{agendamentoBean.especialidade}">
+					<f:selectItem itemLabel="" itemValue=""/>
+					<f:selectItems value="#{agendamentoBean.especialidades}" var="especialidade" itemValue="#{especialidade}" itemLabel="#{especialidade.descricao}"/>
+				</p:selectOneMenu>
+			</h:panelGrid>
+			<h:panelGrid>
+				<p:commandButton actionListener="#{agendamentoBean.grava}"
+					value="agendar" update="@(form:formAgendamentos2)"
+					process="idAgendamento, nomeAgendamento" />
+			</h:panelGrid>
+			<br />
+		</h:form>
+		<h:form id="formAgendamentos2" styleClass="centralizar">
+
+			<p:dataTable id="agendamentoDataTable" lazy="true" paginator="true" rows="5" paginatorPosition="bottom"
+				value="#{agendamentoBean.pacientes}" var="paciente">
+
+				<p:column id="modelHeader" headerText="Nome">
+					<h:outputText value="#{paciente.nomePaciente}" />
+				</p:column>
+
+				<p:column style="width:50px">
+					<p:commandLink update="@(form)">
+						<h:graphicImage value="/imagens/icones/edit.gif" alt="edit" />
+						<f:setPropertyActionListener value="#{paciente}"
+							target="#{agendamentoBean.paciente}" />
+					</p:commandLink>
+				</p:column>
+
+				<p:column style="width:50px">
+					<p:commandLink update="@(form)" action="#{agendamentoBean.remove}">
+						<h:graphicImage value="/imagens/icones/delete.gif" alt="delete" />
+						<f:setPropertyActionListener value="#{paciente}"
+							target="#{agendamentoBean.paciente}" />
+					</p:commandLink>
+				</p:column>
+				
+			</p:dataTable>
+		</h:form>
+	</p:panel>
+</ui:composition>
